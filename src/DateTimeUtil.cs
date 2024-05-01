@@ -37,10 +37,8 @@ public class DateTimeUtil
         minute ??= utcNow.Minute;
         second ??= utcNow.Second;
 
-        var dateTime = new System.DateTime(year.Value, month.Value, day.Value, hour.Value, minute.Value, second.Value);
-        dateTime = dateTime.ToUtcKind();
-
-        return dateTime;
+        var result = new System.DateTime(year.Value, month.Value, day.Value, hour.Value, minute.Value, second.Value, DateTimeKind.Utc);
+        return result;
     }
 
     /// <summary>
