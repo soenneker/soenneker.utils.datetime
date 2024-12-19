@@ -7,7 +7,7 @@ namespace Soenneker.Utils.DateTime;
 /// <summary>
 /// A utility library for helpful DateTime related operations
 /// </summary>
-public class DateTimeUtil
+public static class DateTimeUtil
 {
     /// <summary>
     /// Builds a new <see cref="System.DateTime"/> instance representing a UTC date and time, 
