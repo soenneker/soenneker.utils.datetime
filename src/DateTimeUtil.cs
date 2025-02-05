@@ -37,8 +37,7 @@ public static class DateTimeUtil
         minute ??= utcNow.Minute;
         second ??= utcNow.Second;
 
-        var result = new System.DateTime(year.Value, month.Value, day.Value, hour.Value, minute.Value, second.Value, DateTimeKind.Utc);
-        return result;
+        return new System.DateTime(year.Value, month.Value, day.Value, hour.Value, minute.Value, second.Value, DateTimeKind.Utc);
     }
 
     /// <summary>
@@ -63,7 +62,6 @@ public static class DateTimeUtil
     public static System.DateTime CreateTzDateTime(TimeZoneInfo timeZoneInfo, int? year = null, int? month = null, int? day = null, int? hour = null, int? minute = null, int? second = null)
     {
         System.DateTime result = CreateUtcDateTime(year, month, day, hour, minute, second);
-        result = result.ToUtc(timeZoneInfo);
-        return result;
+        return result.ToUtc(timeZoneInfo);
     }
 }
