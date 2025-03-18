@@ -1,6 +1,9 @@
-using System;
-using System.Diagnostics.Contracts;
 using Soenneker.Extensions.DateTime;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics.Contracts;
+using Soenneker.Extensions.DateTime.Month;
+using Soenneker.Extensions.DateTime.Week;
 
 namespace Soenneker.Utils.DateTime;
 
@@ -63,5 +66,72 @@ public static class DateTimeUtil
     {
         System.DateTime result = CreateUtcDateTime(year, month, day, hour, minute, second);
         return result.ToUtc(timeZoneInfo);
+    }
+
+    /// <summary>
+    /// Generates a list of weekly date ranges between the specified start and end dates, based on the given time zone.
+    /// </summary>
+    /// <param name="startAt">The start date and time.</param>
+    /// <param name="endAt">The end date and time.</param>
+    /// <param name="timeZoneInfo">The time zone to consider for week calculations.</param>
+    /// <returns>
+    /// A list of tuples, each containing a weekly start and end date within the specified range.
+    /// </returns>
+    /// <remarks>
+    /// The method ensures that each week starts and ends according to the specified time zone's week start.
+    /// </remarks>
+    [Pure]
+    public static List<(System.DateTime startAt, System.DateTime endAt)> GetWeeklyDateTimesBetween(System.DateTime startAt, System.DateTime endAt, TimeZoneInfo timeZoneInfo)
+    {
+        var result = new List<(System.DateTime startAt, System.DateTime endAt)>();
+
+        System.DateTime startDate = startAt.ToStartOfTzWeek(timeZoneInfo);
+        System.DateTime endDate = startDate.ToEndOfTzWeek(timeZoneInfo);
+
+        result.Add((startDate, endDate));
+
+        while (endDate < endAt)
+        {
+            startDate = startDate.AddDays(7);
+            endDate = endDate.AddDays(7);
+
+            result.Add((startDate, endDate));
+        }
+
+        return result;
+    }
+
+
+    /// <summary>
+    /// Generates a list of monthly date ranges between the specified start and end dates, based on the given time zone.
+    /// </summary>
+    /// <param name="startAt">The start date and time.</param>
+    /// <param name="endAt">The end date and time.</param>
+    /// <param name="timeZoneInfo">The time zone to consider for month calculations.</param>
+    /// <returns>
+    /// A list of tuples, each containing a monthly start and end date within the specified range.
+    /// </returns>
+    /// <remarks>
+    /// The method ensures that each month starts and ends according to the specified time zone's month start.
+    /// </remarks>
+    [Pure]
+    public static List<(System.DateTime startAt, System.DateTime endAt)> GetMonthlyDateTimesBetween(System.DateTime startAt, System.DateTime endAt, TimeZoneInfo timeZoneInfo)
+    {
+        var result = new List<(System.DateTime startAt, System.DateTime endAt)>();
+
+        System.DateTime startDate = startAt.ToStartOfTzMonth(timeZoneInfo);
+        System.DateTime endDate = startDate.ToEndOfTzMonth(timeZoneInfo);
+
+        result.Add((startDate, endDate));
+
+        while (endDate < endAt)
+        {
+            startDate = startDate.AddMonths(1);
+            endDate = endDate.AddMonths(1);
+
+            result.Add((startDate, endDate));
+        }
+
+        return result;
     }
 }
