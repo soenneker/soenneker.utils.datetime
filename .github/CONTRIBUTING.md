@@ -1,4 +1,4 @@
-# Contributing to Soenneker.Utils.DateTime
+﻿# Contributing to Soenneker.Utils.DateTime
 
 We're excited that you're interested in contributing!
 
