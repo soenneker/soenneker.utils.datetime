@@ -25,7 +25,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\src\Soenneker.Utils.DateTime.csproj" />
+        <ProjectReference Include="..\..\src\Soenneker.Utils.DateTime\Soenneker.Utils.DateTime.csproj" />
     </ItemGroup>
 
     <ItemGroup>
