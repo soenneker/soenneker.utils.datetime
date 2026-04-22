@@ -1,10 +1,9 @@
-using Xunit;
 
 namespace Soenneker.Utils.DateTime.Tests;
 
 public class DateTimeUtilTests
 {
-    [Fact]
+    [Test]
     public void Default()
     {
 
