@@ -83,10 +83,10 @@ public static class DateTimeUtil
     [Pure]
     public static List<(System.DateTime startAt, System.DateTime endAt)> GetWeeklyDateTimesBetween(System.DateTime startAt, System.DateTime endAt, TimeZoneInfo timeZoneInfo)
     {
-        var result = new List<(System.DateTime startAt, System.DateTime endAt)>();
-
         System.DateTime startDate = startAt.ToStartOfTzWeek(timeZoneInfo);
         System.DateTime endDate = startDate.ToEndOfTzWeek(timeZoneInfo);
+        int capacity = endAt <= endDate ? 1 : 1 + (int)Math.Ceiling((endAt - endDate).TotalDays / 7d);
+        var result = new List<(System.DateTime startAt, System.DateTime endAt)>(capacity);
 
         result.Add((startDate, endDate));
 
@@ -117,10 +117,10 @@ public static class DateTimeUtil
     [Pure]
     public static List<(System.DateTime startAt, System.DateTime endAt)> GetMonthlyDateTimesBetween(System.DateTime startAt, System.DateTime endAt, TimeZoneInfo timeZoneInfo)
     {
-        var result = new List<(System.DateTime startAt, System.DateTime endAt)>();
-
         System.DateTime startDate = startAt.ToStartOfTzMonth(timeZoneInfo);
         System.DateTime endDate = startDate.ToEndOfTzMonth(timeZoneInfo);
+        int capacity = Math.Max(1, (endAt.Year - startDate.Year) * 12 + endAt.Month - startDate.Month + 1);
+        var result = new List<(System.DateTime startAt, System.DateTime endAt)>(capacity);
 
         result.Add((startDate, endDate));
 
