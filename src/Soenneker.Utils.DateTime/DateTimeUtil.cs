@@ -94,8 +94,8 @@ public static class DateTimeUtil
 
         while (endDate < endAt)
         {
-            startDate = startDate.AddDays(7);
-            endDate = endDate.AddDays(7);
+            startDate = startDate.ToStartOfNextTzWeek(timeZoneInfo);
+            endDate = startDate.ToEndOfTzWeek(timeZoneInfo);
 
             result.Add((startDate, endDate));
         }
@@ -128,8 +128,8 @@ public static class DateTimeUtil
 
         while (endDate < endAt)
         {
-            startDate = startDate.AddMonths(1);
-            endDate = endDate.AddMonths(1);
+            startDate = startDate.ToStartOfNextTzMonth(timeZoneInfo);
+            endDate = startDate.ToEndOfTzMonth(timeZoneInfo);
 
             result.Add((startDate, endDate));
         }
