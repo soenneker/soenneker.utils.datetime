@@ -3,8 +3,9 @@
 [![](https://img.shields.io/nuget/dt/soenneker.utils.datetime.svg?style=for-the-badge)](https://www.nuget.org/packages/soenneker.utils.datetime/)
 [![](https://img.shields.io/github/actions/workflow/status/soenneker/soenneker.utils.datetime/codeql.yml?label=CodeQL&style=for-the-badge)](https://github.com/soenneker/soenneker.utils.datetime/actions/workflows/codeql.yml)
 
-# ![](https://user-images.githubusercontent.com/4441470/224455560-91ed3ee7-f510-4041-a8d2-3fc093025112.png) Soenneker.Utils.DateTime
-A utility library for helpful DateTime related operations.
+# Soenneker.Utils.DateTime
+
+Static helpers for constructing UTC timestamps and splitting ranges into timezone-aligned weeks or months.
 
 ## Installation
 
@@ -12,15 +13,47 @@ A utility library for helpful DateTime related operations.
 dotnet add package Soenneker.Utils.DateTime
 ```
 
-## Quick start
+## Construct timestamps
+
+`CreateUtcDateTime()` builds a UTC `DateTime`. Any omitted component is taken from one snapshot of `DateTime.UtcNow`:
 
 ```csharp
-using Soenneker.Utils.DateTime;
+DateTime start = DateTimeUtil.CreateUtcDateTime(
+    year: 2026,
+    month: 4,
+    day: 15,
+    hour: 9,
+    minute: 30,
+    second: 0);
 ```
 
-Call the static `DateTimeUtil` methods directly; no dependency-injection registration is required.
+`CreateTzDateTime()` interprets the components as wall-clock time in a timezone and returns the corresponding UTC instant:
 
-## Common operations
+```csharp
+TimeZoneInfo zone = TimeZoneInfo.FindSystemTimeZoneById("America/Chicago");
 
-- `CreateUtcDateTime()` - Builds a new `System.DateTime` instance representing a UTC date and time, with optional year, month, day, hour, minute, and second parameters. If any of these parameters are not provided, the current UTC date and time values are used as defaults. The current UTC date and time is used to fill in any parameters not provided.
-- `CreateTzDateTime()` - Builds a new `System.DateTime` instance representing a date and time adjusted to a specific time zone, with optional year, month, day, hour, minute, and second parameters. If any parameter is not provided, the current UTC date and time values are used as defaults, and then converted to the specified time zone.
+DateTime utc = DateTimeUtil.CreateTzDateTime(
+    zone,
+    year: 2026,
+    month: 4,
+    day: 15,
+    hour: 9,
+    minute: 30,
+    second: 0);
+```
+
+Omitted components use the current wall-clock values in that timezone. Standard `TimeZoneInfo` rules apply: invalid local times during a daylight-saving transition throw, and ambiguous local times use the platform's normal conversion behavior.
+
+## Calendar ranges
+
+```csharp
+List<(DateTime startAt, DateTime endAt)> weeks =
+    DateTimeUtil.GetWeeklyDateTimesBetween(startAt, endAt, zone);
+
+List<(DateTime startAt, DateTime endAt)> months =
+    DateTimeUtil.GetMonthlyDateTimesBetween(startAt, endAt, zone);
+```
+
+Each method first expands `startAt` to the timezone-aligned start and end of its containing calendar period, then adds complete periods until one contains `endAt`. The returned ranges are calendar buckets rather than intersections with the input range, so the first start may precede `startAt` and the final end may follow `endAt`.
+
+Both methods return at least the period containing `startAt`, including when `endAt` is earlier than that period's end. Validate range ordering before calling when an inverted range should be rejected.
